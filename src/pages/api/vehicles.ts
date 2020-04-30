@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 const sqlite = require("sqlite");
+import { isAuth } from "./../../middleware/auth";
 
-export default async function getAllVehicles(
+export default isAuth(async function getAllVehicles(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -12,4 +13,4 @@ export default async function getAllVehicles(
   } catch (error) {
     res.status(400).json({ message: "Error" });
   }
-}
+});
