@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import sqlite from "sqlite";
+import cookie from "cookie";
 import { compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
 
@@ -18,7 +19,19 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
           expiresIn: "1h",
         });
 
-        res.json({ authToken: token });
+        //setcookie
+        res.setHeader(
+          "Set-Cookie",
+          cookie.serialize("auth", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV !== "development",
+            sameSite: "strict",
+            maxAge: 3600,
+            path: "/",
+          })
+        );
+
+        res.json({ message: "Login success" });
       } else {
         res.json({ message: "Invalid credentials" });
       }

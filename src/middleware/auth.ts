@@ -6,19 +6,15 @@ export const isAuth = (fn: NextApiHandler) => async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  verify(
-    req.headers.authorization!,
-    process.env.jwt_secret!,
-    async (err, decoded) => {
-      if (!err && decoded) {
-        return await fn(req, res);
-      }
-
-      return res
-        .status(401)
-        .json({ message: "Sorry you are not authenticated." });
+  verify(req.cookies.auth!, process.env.jwt_secret!, async (err, decoded) => {
+    if (!err && decoded) {
+      return await fn(req, res);
     }
-  );
+
+    return res
+      .status(401)
+      .json({ message: "Sorry you are not authenticated." });
+  });
 };
 
 // if (!req.headers.authorization) {

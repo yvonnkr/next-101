@@ -8,6 +8,8 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
+import { myCustomGet } from "./../helpers/fetch";
+
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
@@ -49,7 +51,19 @@ const Vehicles = ({ vehicleList }) => {
 
 export default Vehicles;
 
-Vehicles.getInitialProps = async () => {
+Vehicles.getInitialProps = async (ctx) => {
+  const cookie = ctx.req?.headers.cookie;
+  const url = "http://localhost:3000/api/vehicles";
+
+  try {
+    const data = await myCustomGet(ctx, cookie, url);
+    return { vehicleList: data };
+  } catch (error) {
+    console.log(error);
+  }
+
+  //#region before customGet
+  /**
   try {
     const response = await fetch("http://localhost:3000/api/vehicles");
     const vehicleList = await response.json();
@@ -57,4 +71,6 @@ Vehicles.getInitialProps = async () => {
   } catch (error) {
     console.log(error);
   }
+   */
+  //#endregion
 };
